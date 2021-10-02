@@ -1,0 +1,40 @@
+name: Node.js CI
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: 安裝相依性套件
+        run: yarn
+      - name: 程式碼風格檢查
+        run: yarn lint
+      - name: 單元測試
+        run: yarn test
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: 設定 gcloud
+      uses: GoogleCloudPlatform/github-actions@master
+      with:
+        project_id: ${{ secrets.GCP_PROJECT }}
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+    - name: 建立 GCF 環境變數檔案
+      shell: bash
+      run: |
+        [[ -z "$ENV_PROD" ]] || echo "$ENV_PROD" > .env.yaml
+        echo "GITHUB_SHA: ${GITHUB_SHA}" >> .env.yaml
+      env:
+        ENV_PROD: ${{ secrets.ENV_PROD }}
+    - name: 部署到 Google Cloud Functions
+      run: yarn deploy
