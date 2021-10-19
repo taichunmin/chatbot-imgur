@@ -12,10 +12,10 @@ module.exports = async (ctx, next) => {
   const contentProvider = _.get(event, 'message.contentProvider.type')
   if (contentProvider === 'line') {
     ctx.image = await line.getMessageContent(_.get(event, 'message.id'))
-    ctx.imgur = await Imgur.uploadByStream(ctx)
+    ctx.imgur = await Imgur.uploadImageByStream(ctx)
   } else {
     ctx.image = _.get(event, 'message.contentProvider.originalContentUrl')
-    ctx.imgur = await Imgur.uploadByUrl(ctx)
+    ctx.imgur = await Imgur.uploadImageByUrl(ctx)
   }
   delete ctx.image
   await ctx.replyMessage(msgImgur(ctx.imgur))

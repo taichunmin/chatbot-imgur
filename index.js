@@ -3,6 +3,7 @@ const { log, middlewareCompose } = require('./libs/helper')
 const middlewares = middlewareCompose([
   require('./libs/imgur').headersMiddleware,
   require('./webhook/line'),
+  require('./webhook/telegram'),
 ])
 
 exports.main = async (req, res) => {
