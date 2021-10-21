@@ -11,7 +11,7 @@ exports.headersMiddleware = async (ctx, next) => {
   return await next()
 }
 
-exports.uploadByStream = async ctx => {
+exports.uploadImageByStream = async ctx => {
   const formData = new FormData()
   formData.append('image', ctx.image)
   formData.append('type', 'file')
@@ -23,7 +23,7 @@ exports.uploadByStream = async ctx => {
   }), 'data.data')
 }
 
-exports.uploadByUrl = async ctx => {
+exports.uploadImageByUrl = async ctx => {
   try {
     const formData = new FormData()
     formData.append('image', ctx.image)
@@ -38,4 +38,17 @@ exports.uploadByUrl = async ctx => {
     _.set(err, 'data.imageUrl', ctx.image)
     throw err
   }
+}
+
+exports.uploadVideoByStream = async ctx => {
+  const formData = new FormData()
+  formData.append('video', ctx.video)
+  formData.append('type', 'file')
+  formData.append('disable_audio', '1')
+  return _.get(await axios.post(`${IMGUR_BASEURL}upload`, formData, {
+    headers: {
+      ...ctx.imgurHeaders,
+      ...formData.getHeaders(),
+    },
+  }), 'data.data')
 }

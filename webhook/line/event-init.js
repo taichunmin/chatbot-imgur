@@ -6,7 +6,7 @@ module.exports = async (ctx, next) => {
   try {
     const { event, line, log } = ctx
     const userId = _.get(event, 'source.userId')
-    log({ message: `Incoming event by ${userId}`, event }) // 先把 event 紀錄到 logger
+    log({ message: `LINE: event from ${userId}`, event }) // 先把 event 紀錄到 logger
 
     // 如果是測試訊息或是沒有 replyToken 就直接不處理
     if (!event.replyToken || userId === 'Udeadbeefdeadbeefdeadbeefdeadbeef') return
