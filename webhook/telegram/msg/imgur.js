@@ -18,13 +18,10 @@ module.exports = imgur => ({
   parse_mode: 'MarkdownV2',
   text: `圖片網址:
 \`${imgur.link}\`
-
 Markdown:
 \`![](${imgur.link})\`
-
 HTML:
 \`<img src="${imgur.link}">\`
-
 圖片比例: \`${imgur.width}:${imgur.height}\`,
 圖片大小: ${escapeMd2(formatSize(imgur.size))}`,
   reply_markup: {

@@ -26,7 +26,7 @@ exports.uploadImageByStream = async ctx => {
 exports.uploadImageByUrl = async ctx => {
   try {
     const formData = new FormData()
-    formData.append('image', ctx.image)
+    formData.append('image', ctx.imageUrl)
     formData.append('type', 'url')
     return _.get(await axios.post(`${IMGUR_BASEURL}upload`, formData, {
       headers: {
@@ -35,7 +35,7 @@ exports.uploadImageByUrl = async ctx => {
       },
     }), 'data.data')
   } catch (err) {
-    _.set(err, 'data.imageUrl', ctx.image)
+    _.set(err, 'data.imageUrl', ctx.imageUrl)
     throw err
   }
 }

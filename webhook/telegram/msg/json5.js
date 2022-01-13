@@ -1,8 +1,10 @@
+const { beautifyFlex } = require('../../../libs/helper')
 const JSON5 = require('json5')
 
 const TEXT_MAXLEN = 4096
 
 const objToMarkdownV2 = obj => {
+  obj = beautifyFlex(obj)
   let str = '```json5\n' + JSON5.stringify(obj, null, 2) + '\n```'
   if (str.length > TEXT_MAXLEN) str = '```json5\n' + JSON5.stringify(obj, null, 1) + '\n```'
   if (str.length > TEXT_MAXLEN) str = '```json5\n' + JSON5.stringify(obj) + '\n```'

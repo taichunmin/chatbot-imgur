@@ -14,7 +14,7 @@ class Client {
       return _.get(await axios.post(url, body), 'data.result')
     } catch (err) {
       err.status = err.response?.status ?? err.status ?? 500
-      err.message = err.response?.data?.description ?? err.message
+      err.message = err.response?.data?.data?.error ?? err.message
       _.set(err, 'data.path', path)
       _.set(err, 'data.body', body)
       throw err
@@ -31,6 +31,20 @@ class Client {
   async sendMessage (body) {
     return await this._apiPost({
       path: 'sendMessage',
+      body,
+    })
+  }
+
+  async sendChatAction (body) {
+    return await this._apiPost({
+      path: 'sendChatAction',
+      body,
+    })
+  }
+
+  async editMessageText (body) {
+    return await this._apiPost({
+      path: 'editMessageText',
       body,
     })
   }

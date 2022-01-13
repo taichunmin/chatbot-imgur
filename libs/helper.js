@@ -83,3 +83,11 @@ exports.encodeBase64url = str => {
   if (!_.isInteger(str.sigBytes)) str = Utf8.parse(`${str}`)
   return Base64.stringify(str).replace(/[+/=]/g, c => _.get({ '+': '-', '/': '_', '=': '' }, c))
 }
+
+exports.beautifyFlex = obj => {
+  if (_.isArray(obj)) return _.map(obj, exports.beautifyFlex)
+  if (!_.isPlainObject(obj)) return obj
+  const grp = _.groupBy(_.toPairs(obj), pair => (_.isArray(pair[1]) || _.isPlainObject(pair[1])) ? 'b' : 'a')
+  _.each(grp.b, v => { v[1] = exports.beautifyFlex(v[1]) })
+  return _.fromPairs([..._.sortBy(grp.a, '0'), ..._.sortBy(grp.b, '0')])
+}

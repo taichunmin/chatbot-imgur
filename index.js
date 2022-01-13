@@ -8,7 +8,7 @@ const middlewares = middlewareCompose([
 
 exports.main = async (req, res) => {
   try {
-    await middlewares({ req })
+    await middlewares({ log, req })
     res.status(200).send('OK')
   } catch (err) {
     log('ERROR', err)
