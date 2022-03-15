@@ -25,7 +25,7 @@
     "jest": "^27.3.1"
   },
   "scripts": {
-    "deploy": "gcloud functions deploy chatbot-imgur --allow-unauthenticated --entry-point=main --env-vars-file=.env.yaml --max-instances=1 --memory=128MB --no-user-output-enabled --region=us-central1 --runtime=nodejs14 --timeout=60s --trigger-http",
+    "deploy": "gcloud beta functions deploy chatbot-imgur --allow-unauthenticated --entry-point=main --env-vars-file=.env.yaml --gen2 --max-instances=1 --memory=128Mi --no-user-output-enabled --region=us-central1 --runtime=nodejs16 --timeout=60s --trigger-http",
     "lint": "eslint --ext .js --fix .",
     "start": "functions-framework --port=3000 --target=main --signature-type=http",
     "test": "jest",

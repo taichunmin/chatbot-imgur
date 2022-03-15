@@ -40,7 +40,7 @@ exports.uploadImageByUrl = async ctx => {
       }), 'data.data'),
     }
   } catch (err) {
-    _.set(err, 'data.imageUrl', ctx.imageUrl)
+    _.set(err, 'data.imageUrl', ctx.imageUrl.replace(/bot\d+:[^/]+/g, '***'))
     throw err
   }
 }
