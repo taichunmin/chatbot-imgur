@@ -3,7 +3,7 @@
  */
 const _ = require('lodash')
 const Imgur = require('../../libs/imgur')
-const msgImgur = require('./msg/imgur')
+const msgImgurImage = require('./msg/imgur-image')
 
 const MAX_FILESIZE = 10 * 1024 * 1024 // 10 MB
 
@@ -26,7 +26,7 @@ module.exports = async (ctx, next) => {
   if (!ctx.imageUrl) return await next()
   await ctx.sendChatAction({ action: 'upload_photo' }) // 顯示正在上傳照片
   ctx.imgur = await Imgur.uploadImageByUrl(ctx)
-  const msg = msgImgur(ctx.imgur)
+  const msg = msgImgurImage(ctx.imgur)
 
   if (!callback) return await ctx.replyMessage(msg) // upload
   await telegram.editMessageText({ // callback

@@ -27,6 +27,7 @@ exports.uploadImageByStream = async ctx => {
 
 exports.uploadImageByUrl = async ctx => {
   try {
+    if (/\.webp$/.test(ctx.imageUrl)) throw new Error('Imgur 不支援 webp 圖片')
     const formData = new FormData()
     formData.append('image', ctx.imageUrl)
     formData.append('type', 'url')

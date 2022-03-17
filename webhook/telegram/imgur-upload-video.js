@@ -4,7 +4,7 @@
 const axios = require('axios')
 const _ = require('lodash')
 const Imgur = require('../../libs/imgur')
-const msgImgur = require('./msg/imgur')
+const msgImgurVideo = require('./msg/imgur-video')
 
 const MAX_FILESIZE = 200 * 1024 * 1024 // 200 MB
 
@@ -34,7 +34,7 @@ module.exports = async (ctx, next) => {
   ctx.video = await getFileDownloadStream(ctx.videoUrl)
   ctx.imgur = await Imgur.uploadVideoByStream(ctx)
   delete ctx.video
-  const msg = msgImgur(ctx.imgur)
+  const msg = msgImgurVideo(ctx.imgur)
   if (!callback) return await ctx.replyMessage(msg) // upload
   await telegram.editMessageText({ // callback
     chat_id: message?.chat?.id,
