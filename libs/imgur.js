@@ -1,44 +1,32 @@
 const _ = require('lodash')
-const axios = require('axios')
-const FormData = require('form-data')
-
-const IMGUR_BASEURL = 'https://api.imgur.com/3/'
+const { ImgurClient } = require('imgur')
 
 exports.headersMiddleware = async (ctx, next) => {
   ctx.imgurClientId = _.get(ctx, 'req.query.imgurClientId', '2905383047408e6')
-  ctx.imgurHeaders = { Authorization: `Client-ID ${ctx.imgurClientId}` }
+  ctx.imgurClient = new ImgurClient({ clientId: ctx.imgurClientId })
   return await next()
 }
 
 exports.uploadImageByStream = async ctx => {
-  const formData = new FormData()
-  formData.append('image', ctx.image)
-  formData.append('type', 'file')
+  const response = await ctx.imgurClient.upload({
+    image: ctx.image,
+    type: 'stream',
+  })
   return {
     clientId: ctx.imgurClientId,
-    ..._.get(await axios.post(`${IMGUR_BASEURL}upload`, formData, {
-      headers: {
-        ...ctx.imgurHeaders,
-        ...formData.getHeaders(),
-      },
-    }), 'data.data'),
+    ...response?.data,
   }
 }
 
 exports.uploadImageByUrl = async ctx => {
   try {
     if (/\.webp$/.test(ctx.imageUrl)) throw new Error('Imgur 不支援 webp 圖片')
-    const formData = new FormData()
-    formData.append('image', ctx.imageUrl)
-    formData.append('type', 'url')
+    const response = await ctx.imgurClient.upload({
+      image: ctx.imageUrl,
+    })
     return {
       clientId: ctx.imgurClientId,
-      ..._.get(await axios.post(`${IMGUR_BASEURL}upload`, formData, {
-        headers: {
-          ...ctx.imgurHeaders,
-          ...formData.getHeaders(),
-        },
-      }), 'data.data'),
+      ...response?.data,
     }
   } catch (err) {
     _.set(err, 'data.imageUrl', ctx.imageUrl.replace(/bot\d+:[^/]+/g, '***'))
@@ -47,17 +35,12 @@ exports.uploadImageByUrl = async ctx => {
 }
 
 exports.uploadVideoByStream = async ctx => {
-  const formData = new FormData()
-  formData.append('video', ctx.video)
-  formData.append('type', 'file')
-  formData.append('disable_audio', '1')
+  const response = await ctx.imgurClient.upload({
+    image: ctx.video,
+    type: 'stream',
+  })
   return {
     clientId: ctx.imgurClientId,
-    ..._.get(await axios.post(`${IMGUR_BASEURL}upload`, formData, {
-      headers: {
-        ...ctx.imgurHeaders,
-        ...formData.getHeaders(),
-      },
-    }), 'data.data'),
+    ...response?.data,
   }
 }
